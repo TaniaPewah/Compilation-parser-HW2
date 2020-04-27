@@ -2,7 +2,7 @@
 	#include "output.hpp"
 	#include <iostream>
 	#include <stdlib.h>
-	typedef enum { OP_AND, OP_OR } opType;
+	
 
 	using namespace std;
 
@@ -30,7 +30,18 @@
 %token BYTE
 %token BOOL
 
+%token BINOP
+%token NUM
+%token B
+%token STRING
 
+%token TRUE
+%token FALSE
+%token NOT
+%token AND
+%token OR
+
+%token RELOP
 
 
 %%
