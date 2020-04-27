@@ -17,11 +17,11 @@
 %token RBRACE
 %token VOID
 %token COMMA
-%token 𝑆C
-%token 𝐴𝑆𝑆𝐼𝐺𝑁
+%token SC
+%token ASSIGN
 %token RETURN
 
-%token 𝐼𝐹
+%token IF
 %token ELSE
 %token WHILE
 %token BREAK
@@ -49,7 +49,7 @@
 Program : Funcs { printProductionRule(0); }
 		;
 
-Funcs : %empty{ printProductionRule(1); }
+Funcs : { printProductionRule(1); }
 	  | FuncDecl Funcs { printProductionRule(2); }
 	  ;
 
@@ -73,23 +73,23 @@ Statements : Statement { printProductionRule(11); }
 		   | Statements Statement { printProductionRule(12); }
 		   ;
 
-Statement : 𝐿𝐵𝑅𝐴𝐶𝐸 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛𝑡𝑠 𝑅𝐵𝑅𝐴𝐶E { printProductionRule(13); }
-		  | 𝑇𝑦𝑝𝑒 𝐼𝐷 𝑆C { printProductionRule(14); }
-		  | 𝑇𝑦𝑝𝑒 𝐼𝐷 𝐴𝑆𝑆𝐼𝐺𝑁 𝐸𝑥𝑝 𝑆C { printProductionRule(15); }
-		  | 𝐼𝐷 𝐴𝑆𝑆𝐼𝐺𝑁 𝐸𝑥𝑝 𝑆C { printProductionRule(16); }
+Statement : LBRACE Statements RBRACE { printProductionRule(13); }
+		  | Type ID SC { printProductionRule(14); }
+		  | Type ID ASSIGN Exp SC { printProductionRule(15); }
+		  | ID ASSIGN Exp SC { printProductionRule(16); }
 		  | Call SC { printProductionRule(17); }
 		  | RETURN SC { printProductionRule(18); }
 		  | RETURN Exp SC { printProductionRule(19); }
-		  | 𝐼𝐹 𝐿𝑃𝐴𝑅𝐸𝑁 𝐸𝑥𝑝 𝑅𝑃𝐴𝑅𝐸𝑁 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛t { printProductionRule(20); }
-		  | 𝐼𝐹 𝐿𝑃𝐴𝑅𝐸𝑁 𝐸𝑥𝑝 𝑅𝑃𝐴𝑅𝐸𝑁 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛𝑡 𝐸𝐿𝑆𝐸 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛𝑡 { printProductionRule(21); }
-		  | 𝑊𝐻𝐼𝐿𝐸 𝐿𝑃𝐴𝑅𝐸𝑁 𝐸𝑥𝑝 𝑅𝑃𝐴𝑅𝐸𝑁 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛t{ printProductionRule(22); }
-		  | 𝑊𝐻𝐼𝐿𝐸 𝐿𝑃𝐴𝑅𝐸𝑁 𝐸𝑥𝑝 𝑅𝑃𝐴𝑅𝐸𝑁 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛𝑡 𝐸𝐿𝑆𝐸 𝑆𝑡𝑎𝑡𝑒𝑚𝑒𝑛t { printProductionRule(23); }
+		  | IF LPAREN Exp RPAREN Statement { printProductionRule(20); }
+		  | IF LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(21); }
+		  | WHILE LPAREN Exp RPAREN Statement{ printProductionRule(22); }
+		  | WHILE LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(23); }
 		  | BREAK SC { printProductionRule(24); }
 		  | CONTINUE SC { printProductionRule(25); }
 		  ;
 
-Call : 𝐼𝐷 𝐿𝑃𝐴𝑅𝐸𝑁 𝐸𝑥𝑝𝐿𝑖𝑠𝑡 𝑅𝑃𝐴𝑅𝐸N { printProductionRule(26); }
-	 | 𝐼𝐷 𝐿𝑃𝐴𝑅𝐸𝑁 𝑅𝑃𝐴𝑅𝐸N { printProductionRule(27); }
+Call : ID LPAREN ExpList RPAREN { printProductionRule(26); }
+	 | ID LPAREN RPAREN { printProductionRule(27); }
 	 ;
 
 ExpList : Exp { printProductionRule(28); }
@@ -102,19 +102,19 @@ Type	: INT { printProductionRule(30); }
 		| BOOL { printProductionRule(32); }
 		;
 
-Exp : 𝐿𝑃𝐴𝑅𝐸𝑁 𝐸𝑥𝑝 𝑅𝑃𝐴𝑅𝐸N { printProductionRule(33); }
-	| 𝐸𝑥𝑝 𝐵𝐼𝑁𝑂𝑃 𝐸𝑥𝑝 { printProductionRule(34); }
+Exp : LPAREN Exp RPAREN { printProductionRule(33); }
+	| Exp BINOP Exp { printProductionRule(34); }
 	| ID { printProductionRule(35); }
 	| Call { printProductionRule(36); }
 	| NUM { printProductionRule(37); }
 	| NUM B { printProductionRule(38); }
-	| SRING { printProductionRule(39); }
+	| STRING { printProductionRule(39); }
 	| TRUE { printProductionRule(40); }
 	| FALSE { printProductionRule(41); }
 	| NOT Exp { printProductionRule(42); }
-	| 𝐸𝑥𝑝 𝐴𝑁𝐷 𝐸𝑥𝑝 { printProductionRule(43); }
-	| 𝐸𝑥𝑝 𝑂𝑅 𝐸𝑥𝑝 { printProductionRule(44); }
-	| 𝐸𝑥𝑝 𝑅𝐸𝐿𝑂𝑃 𝐸𝑥𝑝 { $$.value = $1.value;
+	| Exp AND Exp { printProductionRule(43); }
+	| Exp OR Exp { printProductionRule(44); }
+	| Exp RELOP Exp { $$.value = $1.value;
 					  printProductionRule(45); }
 	;
 
