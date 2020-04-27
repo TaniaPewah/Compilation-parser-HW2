@@ -45,6 +45,13 @@ printable_char_rest [\x23-\x7E]
 
 
 %%
+void                                            return("VOID");
+int                                             return("INT");
+
+
+
+
+
 Int|UInt|Double|Float|Bool|String|Character     showToken("TYPE");
 
 var                                             showToken("VAR");
