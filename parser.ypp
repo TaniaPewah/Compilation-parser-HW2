@@ -10,38 +10,38 @@
 	int yyerror(const char * message);
 %}
 
-%token ID
+%nonassoc ID
 %token LPAREN
-%token RPAREN
-%token LBRACE
-%token RBRACE
+%nonassoc RPAREN
+%nonassoc LBRACE
+%nonassoc RBRACE
 %token VOID
 %token COMMA
 %token SC
 %token ASSIGN
-%token RETURN
+%nonassoc RETURN
 
-%token IF
-%token ELSE
-%token WHILE
-%token BREAK
-%token CONTINUE
-%token INT
-%token BYTE
-%token BOOL
+%nonassoc IF
+%nonassoc ELSE
+%nonassoc WHILE
+%nonassoc BREAK
+%nonassoc CONTINUE
+%nonassoc INT
+%nonassoc BYTE
+%nonassoc BOOL
 
-%token BINOP
+%right BINOP
 %token NUM
 %token B
 %token STRING
 
 %token TRUE
 %token FALSE
-%token NOT
-%token AND
-%token OR
+%left NOT
+%right AND
+%right OR
 
-%token RELOP
+%right RELOP
 
 
 %%
@@ -71,6 +71,7 @@ FormalsList : FormalDecl { printProductionRule(8); }
 FormalDecl : Type ID { printProductionRule(10); };
 Statements : Statement { printProductionRule(11); }
 		   | Statements Statement { printProductionRule(12); }
+		   | if_while_statment
 		   ;
 
 Statement : LBRACE Statements RBRACE { printProductionRule(13); }
@@ -80,10 +81,6 @@ Statement : LBRACE Statements RBRACE { printProductionRule(13); }
 		  | Call SC { printProductionRule(17); }
 		  | RETURN SC { printProductionRule(18); }
 		  | RETURN Exp SC { printProductionRule(19); }
-		  | IF LPAREN Exp RPAREN Statement { printProductionRule(20); }
-		  | IF LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(21); }
-		  | WHILE LPAREN Exp RPAREN Statement{ printProductionRule(22); }
-		  | WHILE LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(23); }
 		  | BREAK SC { printProductionRule(24); }
 		  | CONTINUE SC { printProductionRule(25); }
 		  ;
@@ -117,6 +114,25 @@ Exp : LPAREN Exp RPAREN { printProductionRule(33); }
 	| Exp RELOP Exp { $$.value = $1.value;
 					  printProductionRule(45); }
 	;
+
+
+if_while_statment: open_statement
+         | closed_statement
+         ;
+
+open_statement: IF LPAREN Exp RPAREN closed_statement { printProductionRule(20); }
+              | IF LPAREN Exp RPAREN open_statement
+              | IF LPAREN Exp RPAREN closed_statement ELSE open_statement
+			  | WHILE LPAREN Exp RPAREN closed_statement  { printProductionRule(22); }
+              | WHILE LPAREN Exp RPAREN open_statement
+			  | WHILE LPAREN Exp RPAREN closed_statement ELSE open_statement
+              ;
+
+closed_statement: Statement
+                | IF LPAREN Exp RPAREN closed_statement ELSE closed_statement { printProductionRule(21); }
+                | WHILE LPAREN Exp RPAREN closed_statement ELSE closed_statement  { printProductionRule(23); }
+                ;
+
 
 %%
 
