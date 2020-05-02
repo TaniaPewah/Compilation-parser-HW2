@@ -10,6 +10,10 @@
 	int yyerror(const char * message);
 %}
 
+%nonassoc iff
+%nonassoc ifelse
+
+
 %nonassoc ID
 %token LPAREN
 %nonassoc RPAREN
@@ -70,8 +74,7 @@ FormalsList : FormalDecl { printProductionRule(8); }
 
 FormalDecl : Type ID { printProductionRule(10); };
 Statements : Statement { printProductionRule(11); }
-		   | Statements Statement { printProductionRule(12); }
-		   | if_while_statment
+		   | Statements Statement { printProductionRule(12);}
 		   ;
 
 Statement : LBRACE Statements RBRACE { printProductionRule(13); }
@@ -81,6 +84,10 @@ Statement : LBRACE Statements RBRACE { printProductionRule(13); }
 		  | Call SC { printProductionRule(17); }
 		  | RETURN SC { printProductionRule(18); }
 		  | RETURN Exp SC { printProductionRule(19); }
+		  | IF LPAREN Exp RPAREN Statement  %prec iff { printProductionRule(20); }
+		  | IF LPAREN Exp RPAREN Statement ELSE Statement %prec ifelse { printProductionRule(21); }
+		  | WHILE LPAREN Exp RPAREN Statement %prec iff { printProductionRule(22); }
+		  | WHILE LPAREN Exp RPAREN Statement ELSE Statement %prec ifelse { printProductionRule(23); }
 		  | BREAK SC { printProductionRule(24); }
 		  | CONTINUE SC { printProductionRule(25); }
 		  ;
@@ -115,23 +122,6 @@ Exp : LPAREN Exp RPAREN { printProductionRule(33); }
 					  printProductionRule(45); }
 	;
 
-
-if_while_statment: open_statement
-         | closed_statement
-         ;
-
-open_statement: IF LPAREN Exp RPAREN closed_statement { printProductionRule(20); }
-              | IF LPAREN Exp RPAREN open_statement
-              | IF LPAREN Exp RPAREN closed_statement ELSE open_statement
-			  | WHILE LPAREN Exp RPAREN closed_statement  { printProductionRule(22); }
-              | WHILE LPAREN Exp RPAREN open_statement
-			  | WHILE LPAREN Exp RPAREN closed_statement ELSE open_statement
-              ;
-
-closed_statement: Statement
-                | IF LPAREN Exp RPAREN closed_statement ELSE closed_statement { printProductionRule(21); }
-                | WHILE LPAREN Exp RPAREN closed_statement ELSE closed_statement  { printProductionRule(23); }
-                ;
 
 
 %%
