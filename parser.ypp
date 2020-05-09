@@ -1,12 +1,13 @@
 %{
-	#include "output.hpp"
+
 	#include <iostream>
 	#include <stdlib.h>
-	
-
+    #include "output.hpp"
 	using namespace std;
+	using namespace output;
 
 	extern int yylex();
+
 	int yyerror(const char * message);
 %}
 
@@ -25,8 +26,9 @@
 %token ASSIGN
 %nonassoc RETURN
 
-%nonassoc IF
+%nonassoc NO_ELSE
 %nonassoc ELSE
+%right IF
 %nonassoc WHILE
 %nonassoc BREAK
 %nonassoc CONTINUE
@@ -84,10 +86,10 @@ Statement : LBRACE Statements RBRACE { printProductionRule(13); }
 		  | Call SC { printProductionRule(17); }
 		  | RETURN SC { printProductionRule(18); }
 		  | RETURN Exp SC { printProductionRule(19); }
-		  | IF LPAREN Exp RPAREN Statement  %prec iff { printProductionRule(20); }
-		  | IF LPAREN Exp RPAREN Statement ELSE Statement %prec ifelse { printProductionRule(21); }
-		  | WHILE LPAREN Exp RPAREN Statement %prec iff { printProductionRule(22); }
-		  | WHILE LPAREN Exp RPAREN Statement ELSE Statement %prec ifelse { printProductionRule(23); }
+		  | IF LPAREN Exp RPAREN Statement %prec NO_ELSE { printProductionRule(20); }
+          | IF LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(21); }
+		  | WHILE LPAREN Exp RPAREN Statement %prec NO_ELSE { printProductionRule(22); }
+		  | WHILE LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(23); }
 		  | BREAK SC { printProductionRule(24); }
 		  | CONTINUE SC { printProductionRule(25); }
 		  ;
@@ -118,8 +120,7 @@ Exp : LPAREN Exp RPAREN { printProductionRule(33); }
 	| NOT Exp { printProductionRule(42); }
 	| Exp AND Exp { printProductionRule(43); }
 	| Exp OR Exp { printProductionRule(44); }
-	| Exp RELOP Exp { $$.value = $1.value;
-					  printProductionRule(45); }
+	| Exp RELOP Exp { printProductionRule(45); }
 	;
 
 
