@@ -7,6 +7,7 @@
 	using namespace output;
 
 	extern int yylex();
+	extern int yylineno;
 
 	int yyerror(const char * message);
 %}
@@ -121,6 +122,6 @@ int main()
 
 int yyerror(const char * message)
 {
-	cout<<"Parse error: "<<message<<endl;
+	output::errorSyn( yylineno );
 	exit(0);
 }
