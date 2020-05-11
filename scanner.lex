@@ -48,9 +48,10 @@ continue                    return CONTINUE;
 [\t\n\r ]|\n				;
 \/\/[^\r\n]*[\r|\n|\r\n]?   ;
 .							handleGeneralError();
+
 %%
 
 void handleGeneralError(){
-    printf("Error %s\n", yytext);
+    printf("Error lex %s\n", yytext);
     exit(0);
 }
