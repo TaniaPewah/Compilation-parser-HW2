@@ -10,11 +10,6 @@ void handleGeneralError();
 
 %option yylineno
 %option noyywrap
-digit   		([0-9])
-digitExZiro     ([1-9])
-letter  		([a-zA-Z])
-whitespace		([\t\n\r ]|\n)
-number ({digitExZiro}{digit}*)
 
 %%
 void                        return VOID;
