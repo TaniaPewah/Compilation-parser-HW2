@@ -34,7 +34,7 @@
 %right AND
 %right OR
 
-%right RELOP
+%nonassoc RELOP
 
 %left LPAREN RPAREN LBRACE RBRACE
 
