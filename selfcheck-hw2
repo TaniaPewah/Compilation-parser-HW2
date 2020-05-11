@@ -9,11 +9,11 @@ numtests=2
 command="./hw2 < t\$i.in >& t\$i.res"
 hostname="cscomp"
 tmpdir="selfcheck_tmp"
-# if [ $( hostname ) != "$hostname" ]
-# 	then 
-# 	echo "This script is only intended to run on "$hostname" or "$hostname2"!" 
-# 	exit 
-# fi 
+if [ $( hostname ) != "$hostname" ]
+	then 
+	echo "This script is only intended to run on "$hostname" or "$hostname2"!" 
+	exit 
+fi 
 
 if [ -z "$1" ]
 	then 
