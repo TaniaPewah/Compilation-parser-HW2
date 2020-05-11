@@ -11,118 +11,43 @@
 	int yyerror(const char * message);
 %}
 
-%nonassoc iff
-%nonassoc ifelse
+
+%token BOOL VOID INT BYTE B
+%token TRUE FALSE
+%token WHILE RETURN
+%token BREAK CONTINUE
+%token SC COMMA
+%token ID
+%token STRING NUM
 
 
-%nonassoc ID
-%token LPAREN
-%nonassoc RPAREN
-%nonassoc LBRACE
-%nonassoc RBRACE
-%token VOID
-%token COMMA
-%token SC
 %token ASSIGN
-%nonassoc RETURN
 
 %nonassoc NO_ELSE
 %nonassoc ELSE
 %right IF
-%nonassoc WHILE
-%nonassoc BREAK
-%nonassoc CONTINUE
-%nonassoc INT
-%nonassoc BYTE
-%nonassoc BOOL
 
 %right BINOP
-%token NUM
-%token B
-%token STRING
 
-%token TRUE
-%token FALSE
 %left NOT
 %right AND
 %right OR
 
 %right RELOP
 
+%left LPAREN RPAREN LBRACE RBRACE
 
 %%
 
-Program : Funcs { printProductionRule(0); }
+Program :  Type VOID {  cout << " 3 here \n"; }SC { cout << " new rule here \n"; };
+
+
+
+
+Type	: INT { cout << " 1 here \n";  }
+		| BYTE { printProductionRule(32); }
+		| BOOL { printProductionRule(33); }
 		;
-
-Funcs : { printProductionRule(1); }
-	  | FuncDecl Funcs { printProductionRule(2); }
-	  ;
-
-FuncDecl : RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE { printProductionRule(3); }
-		;
-
-RetType : Type { printProductionRule(4); }
-		| VOID { printProductionRule(5); }
-		;
-
-Formals :  { printProductionRule(6); }
-    | FormalsList { printProductionRule(7); }
-    ;
-
-FormalsList : FormalDecl { printProductionRule(8); }
-			| FormalDecl COMMA FormalsList { printProductionRule(9); }
-			;
-
-FormalDecl : Type ID { printProductionRule(10); };
-Statements : Statement { printProductionRule(11); }
-		   | Statements Statement { printProductionRule(12);}
-		   ;
-
-Statement : LBRACE Statements RBRACE { printProductionRule(13); }
-		  | Type ID SC { printProductionRule(14); }
-		  | Type ID ASSIGN Exp SC { printProductionRule(15); }
-		  | ID ASSIGN Exp SC { printProductionRule(16); }
-		  | Call SC { printProductionRule(17); }
-		  | RETURN SC { printProductionRule(18); }
-		  | RETURN Exp SC { printProductionRule(19); }
-		  | IF LPAREN Exp RPAREN Statement %prec NO_ELSE { printProductionRule(20); }
-          | IF LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(21); }
-		  | WHILE LPAREN Exp RPAREN Statement %prec NO_ELSE { printProductionRule(22); }
-		  | WHILE LPAREN Exp RPAREN Statement ELSE Statement { printProductionRule(23); }
-		  | BREAK SC { printProductionRule(24); }
-		  | CONTINUE SC { printProductionRule(25); }
-		  ;
-
-Call : ID LPAREN ExpList RPAREN { printProductionRule(26); }
-	 | ID LPAREN RPAREN { printProductionRule(27); }
-	 ;
-
-ExpList : Exp { printProductionRule(28); }
-		| Exp COMMA ExpList { printProductionRule(29); }
-		;
-
-		
-Type	: INT { printProductionRule(30); }
-		| BYTE { printProductionRule(31); }
-		| BOOL { printProductionRule(32); }
-		;
-
-Exp : LPAREN Exp RPAREN { printProductionRule(33); }
-	| Exp BINOP Exp { printProductionRule(34); }
-	| ID { printProductionRule(35); }
-	| Call { printProductionRule(36); }
-	| NUM { printProductionRule(37); }
-	| NUM B { printProductionRule(38); }
-	| STRING { printProductionRule(39); }
-	| TRUE { printProductionRule(40); }
-	| FALSE { printProductionRule(41); }
-	| NOT Exp { printProductionRule(42); }
-	| Exp AND Exp { printProductionRule(43); }
-	| Exp OR Exp { printProductionRule(44); }
-	| Exp RELOP Exp { printProductionRule(45); }
-	;
-
 
 
 %%
